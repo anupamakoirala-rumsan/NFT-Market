@@ -1,22 +1,21 @@
-.App {
+.nav_main{
+  overflow: visible;
+  padding-bottom: 10px;
   text-align: center;
+  /* text-justify: center; */
 }
 
-.App-logo {
-  height: 40vmin;
+.upload{
+  padding-top:  30px;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #09d3ac;
+.smallcard{
+  width:60%;
+  height:auto;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top:  10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 10px;
+  
 }
