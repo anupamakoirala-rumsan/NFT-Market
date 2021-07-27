@@ -1,26 +1,42 @@
-pragma solidity ^0.6.4;
+//SPDX-License-Identifier:MIT
+
+pragma solidity ^0.8.4;
  
- import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.4.0/contracts/token/ERC721/ERC721.sol";
- import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.4.0/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
  contract Token is ERC721{
      using Counters for Counters.Counter;
      Counters.Counter public tokenIds;
+
+     mapping(uint256 =>string) _tokenURIs;
      
-     constructor(string memory _name, string memory _symbol)  public ERC721(_name, _symbol){
+     constructor(string memory _name, string memory _symbol)   ERC721(_name, _symbol){
      }
      
      event NFTminted(address owner, uint256 id);
     
+    string private _baseURIs;
     
      //mint the collectibles
-     function mintNft(address reciever, string memory metadata ) external {
+     function mintNft(address reciever, string memory _tokenURI ) external {
         uint256 id = tokenIds.current();
         _mint(reciever,id);
-        _setTokenURI(id,metadata);
+        _setTokenURI(id,_tokenURI);
         tokenIds.increment();
-        NFTminted(reciever,id);
+       emit  NFTminted(reciever,id);
          
      }
+    //set the URI of collectibles
+     function _setTokenURI(uint256 id,string memory _tokenURI)internal {
+         require(_exists(id),"URI of nonexistent token");
+         _tokenURIs[id] = _tokenURI;
+     }
+     //set baseURI of collectibles
+
+    function _setbaseURI(string memory baseURI) internal virtual{
+        _baseURIs = baseURI;
+    }
+
      //display the tokens belonging to the particular owner
      function tokensofOwner(address _owner) external view  returns(uint256[] memory){
          uint256 _total = tokenIds.current();

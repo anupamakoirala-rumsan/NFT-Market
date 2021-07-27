@@ -1,4 +1,6 @@
-pragma solidity ^0.6.4;
+//SPDX-License-Identifier:MIT
+
+pragma solidity ^0.8.4;
 
 import "./Token.sol";
 
@@ -17,7 +19,7 @@ contract Tokenmarket{
     mapping(uint256 => states) forsale;//maps the tokenid with it's state
     mapping(uint256 => uint256) sellingprice; // maps the tokenid with it's selling price as added by the owner
     
-    constructor ( Token _tokens) public {
+    constructor ( Token _tokens)  {
          tokens = _tokens;
     }
      event listedforsale(uint256 tokenid, uint256 price , address issuer);
@@ -33,7 +35,8 @@ contract Tokenmarket{
         {
             uint256 return_value;
             return_value = msg.value -price;
-            msg.sender.transfer(return_value);
+            buyer = payable(msg.sender);
+            buyer.transfer(return_value);
         }
         _;
     }
@@ -45,7 +48,7 @@ contract Tokenmarket{
         require (tokens.getApproved(tokenid) == address(this),"Contract is not approved to sell the token");
         sellingprice[tokenid] = price;
         forsale[tokenid] = states.sale;
-        listedforsale(tokenid, price ,address(this));
+        emit listedforsale(tokenid, price ,address(this));
 
     }
     //buy the collectibles paying sufficient price as indicated
@@ -59,7 +62,7 @@ contract Tokenmarket{
         seller.transfer(price);
        
         tokens.safeTransferFrom(seller,msg.sender,tokenid);
-        tokensold(tokenid, msg.sender);
+      emit   tokensold(tokenid, msg.sender);
        
     }
     
