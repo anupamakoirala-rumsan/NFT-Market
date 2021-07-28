@@ -6,7 +6,7 @@ import { css } from "@emotion/react";
 function Loader(props){
     const override = css
     `display:block;
-    width:60%;
+    width:100%;
     margin: 0 auto;
     
     

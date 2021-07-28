@@ -11,8 +11,11 @@ const [loading,setLoading] = useState(false);
     return(
         <div className="home_page">
             <Nabbar/>
-           
-
+            <div className="heading">
+        <h3>
+            Add your art work in Blockchain and secure it's ownership
+        </h3>
+    </div>
             <div className ="upload">
             <Card className="smallcard">
             <Form>
@@ -28,7 +31,10 @@ const [loading,setLoading] = useState(false);
                     <Form.Label>
                        Name
                     </Form.Label>
-                    
+                    <Form.Control type ="Text" />
+                    <Form.Label>
+                       Artist
+                    </Form.Label>
                     <Form.Control type ="Text" />
                 </Form.Group>
             </Form>
