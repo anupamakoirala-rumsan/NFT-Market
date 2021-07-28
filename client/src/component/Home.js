@@ -5,12 +5,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Loader from "../utilities/Loader"
 
 
-function Home(){
+function Home(props){
 const [loading,setLoading] = useState(false);
 
     return(
         <div className="home_page">
-            <Nabbar/>
+            <Nabbar
+            currentAccount ={props.currentAccount}/>
             <div className="heading">
         <h3>
             Add your art work in Blockchain and secure it's ownership

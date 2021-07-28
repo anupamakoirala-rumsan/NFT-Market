@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import {Card ,Col,Row,Image,Button} from "react-bootstrap";
 import Nabbar from "./Nav";
 import Loader from "../utilities/Loader"
-function Details(){
+function Details(props){
     const[loading,setloading] = useState(true)
     return(
         <div className="detailspage">
-            <Nabbar/>
+            <Nabbar
+            currentAccount ={props.currentAccount}/>
             <Loader
             loading={loading}/>
             <h3></h3>

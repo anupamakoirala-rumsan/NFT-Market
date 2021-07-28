@@ -4,11 +4,12 @@ import {Button, Card, Form,Collapse} from "react-bootstrap";
 import logo from "../logo.svg";
 
 
-function User(){
+function User(props){
 const[loading,setLoading] = useState(false);
     return(
         <div className="userpage">
-        <Nabbar/>
+        <Nabbar
+        currentAccount ={props.currentAccount}/>
         <div className="heading">
         <h3>Collectibles owned by you</h3>
         </div>

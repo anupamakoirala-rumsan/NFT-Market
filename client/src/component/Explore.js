@@ -2,11 +2,12 @@ import React from "react";
 import Nabbar from "./Nav";
 import {Card,Row,Col} from "react-bootstrap";
 import logo from "../logo.svg";
-function Explore(){
+function Explore(props){
     return(
     <div className="explore">
 
-    <Nabbar/>
+    <Nabbar
+    currentAccount ={props.currentAccount}/>
     <div className="heading">
         <h3>
             All the collectibles available in this contract
