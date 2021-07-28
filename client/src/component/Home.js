@@ -18,7 +18,7 @@ const [loading,setLoading] = useState(false);
             <Form>
                 <Form.Group controlId="formFile" className="mb-3">
                     <Form.Label>
-                        Upload your ArtWork here(It can either be music,image,video)
+                        Upload your ArtWork here(It can either be music,image,video or any of your artwork)
                     </Form.Label>
                     <Form.Control type ="File" />
                 </Form.Group>
