@@ -6,16 +6,18 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
  contract Token is ERC721{
      using Counters for Counters.Counter;
+     using Strings for uint256;
      Counters.Counter public tokenIds;
 
      mapping(uint256 =>string) _tokenURIs;
+     string private _baseURIs;
+
      
      constructor(string memory _name, string memory _symbol)   ERC721(_name, _symbol){
      }
      
      event NFTminted(address owner, uint256 id);
     
-    string private _baseURIs;
     
      //mint the collectibles
      function mintNft(address reciever, string memory _tokenURI ) external {
@@ -26,16 +28,37 @@ import "@openzeppelin/contracts/utils/Counters.sol";
        emit  NFTminted(reciever,id);
          
      }
+     
     //set the URI of collectibles
      function _setTokenURI(uint256 id,string memory _tokenURI)internal {
          require(_exists(id),"URI of nonexistent token");
          _tokenURIs[id] = _tokenURI;
      }
-     //set baseURI of collectibles
 
-    function _setbaseURI(string memory baseURI) internal virtual{
-        _baseURIs = baseURI;
+     //set baseURI of collectibles
+    function _setbaseURI(string memory baseURIs) external {
+        _baseURIs = baseURIs;
     }
+
+
+    function tokenURI(uint256 id) public view virtual override returns(string memory){
+        require(_exists(id),"URI query for nonexistent token");
+        string memory _tokenURI = _tokenURIs[id];
+        string memory base = _baseURI();
+        //return token URi if baseURI is not present
+        if(bytes(base).length==0){
+            return(_tokenURI);
+        }
+        //concatenate both base and token URI if both are present
+        if(bytes(_tokenURI).length>0){
+            return string(abi.encodePacked(base,_tokenURI));
+        }
+    
+        //concatenate baseURI with tokenId if tokenURI isnot present
+        return string (abi.encodePacked(base,id.toString()));
+        
+    }
+
 
      //display the tokens belonging to the particular owner
      function tokensofOwner(address _owner) external view  returns(uint256[] memory){
