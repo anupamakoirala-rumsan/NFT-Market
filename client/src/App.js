@@ -17,6 +17,7 @@ function App(){
 
 
   const getweb3data = async()=>{
+    try{
     const web3 = await getWeb3();
     //get the address from metamask
     const accounts = await web3.eth.getAccounts();
@@ -48,8 +49,23 @@ function App(){
     let tokens = [];
     tokens = await firstinstance.methods.tokensofOwner(accounts[0]).call();
     console.log(tokens);
+    const details=[];
+    // for(var i =0;i< tokens.length;i++){
+    //   const detail = await secondinstance.methods.details(i).call({from:accounts[0]});
+    //    console.log(detail);
+    //   details.push(detail);
+    //    console.log("hh");
+    //    console.log(i);
 
+    //   }
+    const owner = await firstinstance.methods.ownerOf(0).call();
+    console.log(owner);
 
+  }
+  catch(error){
+    alert("consult console");
+    console.log(error);
+  }
   }
   useEffect(()=>{
     getweb3data();
@@ -61,7 +77,8 @@ function App(){
         <Route path="/" exact >
 
    <Home 
-   currentAccount ={currentAccount}/>
+   currentAccount ={currentAccount}
+   firstcontract={firstcontract}/>
    </Route>
    <Route path ='/explore' exact>
     <Explore 
