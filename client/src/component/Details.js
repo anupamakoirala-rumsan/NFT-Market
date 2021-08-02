@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {Card ,Col,Row,Image,Button} from "react-bootstrap";
 import Nabbar from "./Nav";
 import Loader from "../utilities/Loader"
 function Details(props){
-    const[loading,setloading] = useState(true)
+    console.log("key",props.key);
+    const[loading,setloading] = useState(false)
     return(
         <div className="detailspage">
             <Nabbar
@@ -27,7 +28,7 @@ function Details(props){
                     <br/>
                     <label>Owner:</label>                    
                     <br/>
-                    <label>Token Id:</label>
+                    <label>Token Id:{props.key}</label>
                     <br/>
                     <label>Artist:</label>
                     <br/>

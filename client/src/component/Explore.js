@@ -3,6 +3,9 @@ import Nabbar from "./Nav";
 import {Card,Row,Col} from "react-bootstrap";
 import logo from "../logo.svg";
 function Explore(props){
+    console.log(props.owners);
+    console.log(props.details)
+    
     return(
     <div className="explore">
 
@@ -14,15 +17,18 @@ function Explore(props){
         </h3>
     </div>
     <div className="display">
-        <Card  className="displaycard">
-            <img src={logo}
-            height="100"
-            width="100"/>
-            <label>Name:</label>
-            <label>Tokenid:</label>
-            <label>Price:50</label>
-            < a href ="/details"> Details</a>
-            </Card>
+        {props.details.map((details,key)=>(
+
+        <Card  className="displaycard" key ={key}>
+            <img src={details.image}
+            height="200"
+            width="200"/>
+            <label>Name:{" "}<span>{details.name}</span></label>
+            <label>Token Id:{" "}{key}</label>
+            < a href ="/details"
+            key ={key}> Details</a>
+            </Card>         ))}
+
             
     </div>
         </div>

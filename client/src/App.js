@@ -10,11 +10,13 @@ import Token from "./contracts/Token.json";
 import Tokenmarket from "./contracts/Tokenmarket.json";
 // import "bootstrap/dist/css/bootstrap.min.css";
  import "./App.css";
+import axios from "axios";
 function App(){
   const[currentAccount,setCurrentAccount]= useState('');
   const[firstcontract,setFirstContract] = useState({});
   const[secondcontract,setSecondContract] = useState({});
-
+  const[owners,setOwners] = useState([]);
+  const[tdetails,setTdetails] = useState([]);
 
   const getweb3data = async()=>{
     try{
@@ -49,23 +51,48 @@ function App(){
     let tokens = [];
     tokens = await firstinstance.methods.tokensofOwner(accounts[0]).call();
     console.log(tokens);
-    const details=[];
-    // for(var i =0;i< tokens.length;i++){
-    //   const detail = await secondinstance.methods.details(i).call({from:accounts[0]});
-    //    console.log(detail);
-    //   details.push(detail);
-    //    console.log("hh");
-    //    console.log(i);
-
-    //   }
-    const owner = await firstinstance.methods.ownerOf(0).call();
-    console.log(owner);
+   
+    let token ;
+    //display the total token in the contract
+    token = await firstinstance.methods.tokenIds().call();
+    // console.log(token.outputs);
+    console.log(token);
+      const baseuri = `https://ipfs.io/ipfs/`;
+    const uri=  await firstinstance.methods._setbaseURI(baseuri).call();
+    console.log("uri", uri);
+    var t_details = [];
+    var owners = [];
+    //get the token uri and retrieve metadata form the ipfs
+    for (var i=0;i< token;i++){
+      const owner = await firstinstance.methods.ownerOf(i).call();
+      const uri = await firstinstance.methods.tokenURI(i).call();
+      const url = `https://ipfs.io/ipfs/${uri}`;//get the uri where metadata is stored.
+      const detail = await axios.get(url).then(r=>r.data);//get json data 
+      owners.push(owner);
+      t_details.push(detail);
+      console.log(detail);
+      console.log(i);
+      console.log(uri);
+      console.log(url);
+      console.log(owner);
+    }
+    setOwners(owners);
+    setTdetails(t_details);
 
   }
   catch(error){
     alert("consult console");
     console.log(error);
   }
+  }
+
+  const tokendetails = async()=>{
+    let tokens ;
+    console.log(firstcontract)
+    tokens = await firstcontract.methods.tokenIds.call();
+    console.log(tokens);
+
+    
   }
   useEffect(()=>{
     getweb3data();
@@ -82,11 +109,15 @@ function App(){
    </Route>
    <Route path ='/explore' exact>
     <Explore 
-    currentAccount ={currentAccount}/>
+    currentAccount ={currentAccount}
+    details ={tdetails}
+    owners={owners}/>
     </Route>
     <Route path ="/details" exact>
       <Details 
-      currentAccount ={currentAccount}/>
+      currentAccount ={currentAccount}
+      firstcontract ={firstcontract}
+      secondcontract={secondcontract}/>
     </Route>
     <Route path ="/user" >
       <User 
