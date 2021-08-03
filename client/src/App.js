@@ -8,6 +8,8 @@ import User from "./component/User";
 import getWeb3 from "./getWeb3";
 import Token from "./contracts/Token.json";
 import Tokenmarket from "./contracts/Tokenmarket.json";
+import { CONTRACTADDRESS,ABI } from "./config/firstconfig";
+import { CONTRACT_ADDRESS,ABI_ } from "./config/secondconfig";
 // import "bootstrap/dist/css/bootstrap.min.css";
  import "./App.css";
 import axios from "axios";
@@ -17,10 +19,11 @@ function App(){
   const[secondcontract,setSecondContract] = useState({});
   const[owners,setOwners] = useState([]);
   const[tdetails,setTdetails] = useState([]);
-
+  const[web3,setWeb3] = useState();
   const getweb3data = async()=>{
     try{
     const web3 = await getWeb3();
+    setWeb3(web3);
     //get the address from metamask
     const accounts = await web3.eth.getAccounts();
     console.log(accounts[0]);
@@ -32,11 +35,13 @@ function App(){
     const networkdeployed = Token.networks[networkid];
    
     //get the instance of first contract
-    const firstinstance = await new  web3.eth.Contract(Token.abi,networkdeployed&& networkdeployed.address);
+    // const firstinstance = await new  web3.eth.Contract(Token.abi,networkdeployed&& networkdeployed.address);
+    const firstinstance = await new web3.eth.Contract(ABI,CONTRACTADDRESS);
     console.log(firstinstance);
 
     //get the instance of second contract
-    const secondinstance = await new web3.eth.Contract(Tokenmarket.abi, networkdeployed && networkdeployed.address);
+    // const secondinstance = await new web3.eth.Contract(Tokenmarket.abi, networkdeployed && networkdeployed.address);
+      const secondinstance = await new web3.eth.Contract(ABI_,CONTRACT_ADDRESS);
     console.log(secondinstance);
 
     //set the first contract
@@ -79,6 +84,9 @@ function App(){
     setOwners(owners);
     setTdetails(t_details);
 
+    const price = await secondinstance.methods.tokenstate(0).call({from:currentAccount});
+    console.log(price);
+
   }
   catch(error){
     alert("consult console");
@@ -117,7 +125,8 @@ function App(){
       <Details 
       currentAccount ={currentAccount}
       firstcontract ={firstcontract}
-      secondcontract={secondcontract}/>
+      secondcontract={secondcontract}
+      web3 = {web3}/>
     </Route>
     <Route path ="/user" >
       <User 
