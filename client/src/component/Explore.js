@@ -1,5 +1,6 @@
 import React from "react";
 import Nabbar from "./Nav";
+import {Link} from "react-router-dom";
 import {Card,Row,Col} from "react-bootstrap";
 import logo from "../logo.svg";
 function Explore(props){
@@ -25,8 +26,8 @@ function Explore(props){
             width="200"/>
             <label>Name:{" "}<span>{details.name}</span></label>
             <label>Token Id:{" "}{key}</label>
-            < a href ="/details"
-            key ={key}> Details</a>
+            <Link to ={`/details/${key}`}
+            > Details</Link>
             </Card>         ))}
 
             

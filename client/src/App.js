@@ -113,7 +113,7 @@ function App(){
     details ={tdetails}
     owners={owners}/>
     </Route>
-    <Route path ="/details" exact>
+    <Route path ="/details/:id" >
       <Details 
       currentAccount ={currentAccount}
       firstcontract ={firstcontract}
