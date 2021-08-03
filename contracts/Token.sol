@@ -45,7 +45,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
         require(_exists(id),"URI query for nonexistent token");
         string memory _tokenURI = _tokenURIs[id];
         string memory base = _baseURI();
-        //return token URi if baseURI is not present
+        //return token URI if baseURI is not present
         if(bytes(base).length==0){
             return(_tokenURI);
         }

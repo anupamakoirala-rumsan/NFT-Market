@@ -26,8 +26,8 @@ function Details(props){
         // console.log(url);
         const detail = await axios.get(url).then(r=>r.data);
         // console.log(detail);
-        // const dataStr = await secondcontract.methods.forsale(id).call();
-        // console.log(dataStr);
+        const dataStr = await secondcontract.methods.forsale(id).call();
+        console.log(dataStr);
         // console.log(dataStr);
             // console.log(detail.properties.artist)
 

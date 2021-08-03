@@ -16,7 +16,7 @@ contract Tokenmarket{
         sale
     }
     
-    mapping(uint256 => states) forsale;//maps the tokenid with it's state
+    mapping(uint256 => states) public forsale;//maps the tokenid with it's state
     mapping(uint256 => uint256) sellingprice; // maps the tokenid with it's selling price as added by the owner
     
     constructor ( Token _tokens)  {
@@ -67,14 +67,19 @@ contract Tokenmarket{
     }
     
     //dispaly the details of the collectibles
-    function details(uint256 id) public  view returns( address _owner, string  memory tokenuri,states state,uint256 price){
+    function tokendetails(uint256 id) public  view returns( address _owner, string  memory tokenuri,states state,uint256 price){
         address owner = tokens.ownerOf(id);
         string memory uri = tokens.tokenURI(id);
         return(owner,uri,
         forsale[id],
         sellingprice[id]
-        );
-        
+        ); 
+    }
+
+    //display the token state
+    function tokenstate(uint256 id) public view returns (states state){
+        return forsale[id]; 
+
     }
     
     //remove the token form the sale list
