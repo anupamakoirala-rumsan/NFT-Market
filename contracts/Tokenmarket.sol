@@ -11,14 +11,21 @@ contract Tokenmarket{
     address  payable buyer;
     Token public tokens;
     
-    enum  states {
-        initial,
-        sale
+    // enum  states {
+    //     initial,
+    //     sale
+    // }
+
+     struct token{
+        uint256 forsale;
+        uint256 sellingprice;
     }
+    // mapping(uint256 => states) public forsale;//maps the tokenid with it's state
+    // mapping(uint256 =>bool) forsale;
+    // mapping(uint256 => uint256) sellingprice; // maps the tokenid with it's selling price as added by the owner
     
-    mapping(uint256 => states) public forsale;//maps the tokenid with it's state
-    mapping(uint256 => uint256) sellingprice; // maps the tokenid with it's selling price as added by the owner
-    
+    mapping(uint256=>token) collectibes;
+
     constructor ( Token _tokens)  {
          tokens = _tokens;
     }
@@ -44,22 +51,31 @@ contract Tokenmarket{
      //to list the collectibles for sale by the owner ,contract(approved to sale token on behalf of owner)
     function listforsell(uint256 price,uint256 tokenid) public{
         require(price != 0,"Selling price cannot be zero");
-        require(forsale[tokenid] != states.sale,"Token already in sale");
+        require(collectibes[tokenid].forsale == 0 ,"Token already in sale");
+
+        // require(forsale[tokenid] != states.sale,"Token already in sale");
         require (tokens.getApproved(tokenid) == address(this),"Contract is not approved to sell the token");
-        sellingprice[tokenid] = price;
-        forsale[tokenid] = states.sale;
+        // sellingprice[tokenid] = price;
+        // forsale[tokenid] = states.sale;
+        collectibes[tokenid].sellingprice = price;
+        collectibes[tokenid].forsale =1;
         emit listedforsale(tokenid, price ,address(this));
 
     }
     //buy the collectibles paying sufficient price as indicated
-    function buytoken(uint256 tokenid) public  payable  paidenough (sellingprice[tokenid]) refundexcess(sellingprice[tokenid]){
+    function buytoken(uint256 tokenid) public  payable  paidenough (collectibes[tokenid].sellingprice) refundexcess(collectibes[tokenid].sellingprice){
         
-        uint256 price = sellingprice[tokenid];
-        require(forsale[tokenid] == states.sale,"Token is not forsale");
+        // uint256 price = sellingprice[tokenid];
+         uint256 price = collectibes[tokenid].sellingprice;
+
+        // require(forsale[tokenid] == states.sale,"Token is not forsale");
+        require(collectibes[tokenid].forsale == 1,"Token is not forsale");
         require(price > 0, "not for sale");
         
         seller = payable(tokens.ownerOf(tokenid));
         seller.transfer(price);
+        collectibes[tokenid].forsale = 0;
+
        
         tokens.safeTransferFrom(seller,msg.sender,tokenid);
       emit   tokensold(tokenid, msg.sender);
@@ -67,26 +83,37 @@ contract Tokenmarket{
     }
     
     //dispaly the details of the collectibles
-    function tokendetails(uint256 id) public  view returns( address _owner, string  memory tokenuri,states state,uint256 price){
+    function tokendetails(uint256 id) public  view returns( address _owner, string  memory tokenuri,uint256 price){
         address owner = tokens.ownerOf(id);
         string memory uri = tokens.tokenURI(id);
         return(owner,uri,
-        forsale[id],
-        sellingprice[id]
+        // collectibes[id].forsale,
+        collectibes[id].sellingprice
+        // forsale[id],
+        // sellingprice[id]
         ); 
     }
 
     //display the token state
-    function tokenstate(uint256 id) public view returns (states state){
-        return forsale[id]; 
+    function tokenstate(uint256 id) public view returns (uint256 forsale){
+        return collectibes[id].forsale; 
 
+    }
+    //display tokenprice 
+    function tokenprice(uint256 id) public view returns(uint256 price){
+        return collectibes[id].sellingprice;
     }
     
     //remove the token form the sale list
     function cancelsell(uint256 tokenid) public {
-        require(forsale[tokenid] == states.sale,"Token isnot for sale");
+        // require(forsale[tokenid] == states.sale,"Token isnot for sale");
+        require(collectibes[tokenid].forsale == 1,"Token isnot for sale");
+
         require(msg.sender ==tokens.ownerOf(tokenid),"Only  Token owner can cancel the sell ");
-        forsale[tokenid] = states.initial;
+        // forsale[tokenid] = states.initial;
+     collectibes[tokenid].forsale = 0;
+
+
     }
     
 } 
