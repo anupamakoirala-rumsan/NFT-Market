@@ -128,9 +128,13 @@ function App(){
       secondcontract={secondcontract}
       web3 = {web3}/>
     </Route>
-    <Route path ="/user" >
+    <Route path ="/user/:id" >
       <User 
-      currentAccount ={currentAccount}/>
+      currentAccount ={currentAccount}
+      firstcontract ={firstcontract}
+      secondcontract={secondcontract}
+      web3 = {web3}
+      />
     </Route>
     </Switch>
     </BrowserRouter>
