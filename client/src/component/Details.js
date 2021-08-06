@@ -41,7 +41,8 @@ function Details(props){
             setForsale(false);
         }
 
-        const price = await secondcontract.methods.tokenprice(id).call();
+        var price = await secondcontract.methods.tokenprice(id).call();
+        price = props.web3.utils.fromWei(price,"ether")
         console.log(price);
         // price =props.web3.utils.toWei(price,"ether");
         setPrice(price);
@@ -54,8 +55,11 @@ function Details(props){
 }}
 
 const handlebuy = async(value)=>{
+    if(owner === props.currentAccount){
+        alert("Owner cannot buy it's own token")
+    }
+    else{
     try{
-        
         value =props.web3.utils.toWei(value,"ether");
         const buyevent = await secondcontract.methods.buytoken(id).send({from:props.currentAccount,value:value});
         console.log(buyevent);
@@ -63,7 +67,7 @@ const handlebuy = async(value)=>{
     }
     catch(err){
         console.log(err);
-    }
+    }}
 }
     useEffect(()=>{
         getdetails();
@@ -101,7 +105,7 @@ const handlebuy = async(value)=>{
                     <span>Uploaded Timestamp:{" "}{timestamp}
                         </span>
                     <br/>
-                    <span>Price:{" "}{price}</span>
+                    <span>Price:{" "}{price} Ether</span>
                     <br/>
                     
                     <Button onClick={(event)=> 
