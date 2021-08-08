@@ -3,9 +3,8 @@ import Nabbar from "./Nav";
 import {Form,Button,Card} from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Loader from "../utilities/Loader"
-import MetadataType from "../metadata/Metadata";
 import ipfs from "../utilities/ipfs";
-
+import history from '../utilities/history';
 function Home(props){
     const nameref = useRef();
     const artistref = useRef();
@@ -56,6 +55,7 @@ function Home(props){
         setLoading(!loading);
         const result = event.events.NFTminted.returnValues[0];
         console.log(result); 
+        history.push('/explore')
 
     }
     

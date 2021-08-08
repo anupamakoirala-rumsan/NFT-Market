@@ -4,6 +4,7 @@ import Nabbar from "./Nav";
 import Loader from "../utilities/Loader"
 import {useHistory,useParams} from "react-router-dom";
 import axios from "axios";
+
 function Details(props){
     const {id} = useParams();
     const [owner,setOwner] = useState('');
@@ -71,7 +72,7 @@ const handlebuy = async(value)=>{
 }
     useEffect(()=>{
         getdetails();
-    })
+    },[])
 
     const[loading,setloading] = useState(false)
     return(
@@ -80,7 +81,10 @@ const handlebuy = async(value)=>{
             currentAccount ={props.currentAccount}/>
             <Loader
             loading={loading}/>
-            <h3></h3>
+            <div className="heading">
+
+            <h3> Know a little  bit  more about the token number {id}</h3>
+            </div>
             <div className ="details">
             <Card>
                 <Row>
@@ -113,7 +117,7 @@ const handlebuy = async(value)=>{
                     }
                         aria-controls ="example-collapse-text"
                         aria-expanded ={Loading}
-                        disabled={!forsale}
+                        disabled={!forsale || props.currentAccount === owner}
                         >Buy Token</Button>
                         <Collapse in={Loading}>
                     <div id="example-collapse-text">

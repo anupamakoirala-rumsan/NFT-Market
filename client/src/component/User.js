@@ -1,29 +1,37 @@
 import React, { useEffect, useState,useRef } from "react";
 import Nabbar from "./Nav";
-import {Button, Card, Form,Collapse} from "react-bootstrap";
-import logo from "../logo.svg";
+import {Button, Card, Form,Collapse,Alert} from "react-bootstrap";
 import {useParams,Link} from "react-router-dom";
 import axios from "axios";
 import { CONTRACT_ADDRESS,ABI_ } from "../config/secondconfig";
-import Switch from "react-bootstrap/esm/Switch";
-
-
+import { CONTRACTADDRESS,ABI } from "../config/firstconfig";
+import Web3 from "web3";
 
 function User(props){
     const {id} = useParams();
-    const firstcontract = props.firstcontract;
-    const secondcontract = props.secondcontract;
+    // const firstcontract = props.firstcontract;
+    // const secondcontract = props.secondcontract;
+    const[tokenlen,setTokenlen] = useState(0);
     const [tokens,setTokens] =useState();
     const[tokendetail,setToken] = useState([]);
     const[loading,setLoading] = useState(false);
     const valueref = useRef();
     const [price,setPrice] = useState([])
     const[tokenstate,setTokenstate] = useState([]);
-    const gettokens = async()=>{
+    const web3 = new Web3(Web3.givenProvider)
+    const firstcontract =  new web3.eth.Contract(ABI,CONTRACTADDRESS);
+    const secondcontract  =  new web3.eth.Contract(ABI_,CONTRACT_ADDRESS);
+
+    const gettokens = async(e)=>{
         try{
+            console.log(firstcontract);
         //list the owned token
        var token = await firstcontract.methods.tokensofOwner(id).call();
         // console.log(token);
+        const len = token.length;
+        setTokenlen(len);
+        console.log(len);
+        // console.log(len,"length");
         var details =[];
         var states =[];
         setTokens(token);
@@ -36,7 +44,7 @@ function User(props){
             // console.log(token[i]);
 
             var price = await secondcontract.methods.tokenprice(token[i]).call();
-            price  = props.web3.utils.fromWei(price,"ether");
+            price  = web3.utils.fromWei(price,"ether");
 
             prices.push(price);
 
@@ -52,17 +60,19 @@ function User(props){
             console.log(err);
         }
     }
+
+    console.log(tokenlen,"Tokenlen");
+
 useEffect(()=>{
     gettokens();
-})
+},[tokenlen]);
 
 
-    // console.log(id);
 
 //place token for sale 
 const handlesale = async(token_id,value)=>{
     try{
-    const price  = props.web3.utils.toWei(value,"ether");
+    const price  = web3.utils.toWei(value,"ether");
     //list the given token for sale by the owner
     console.log(price);
     const sellevent = await secondcontract.methods.listforsell(price,token_id).send({from:props.currentAccount});
@@ -99,9 +109,9 @@ const handlesalecancel = async(tokenid)=>{
     try{
         if(tokenstate[tokenid] ==0 ){
             alert("Token isnot for sale")
-        }
+
+     }
         else {
-            // alert("You can cancel the sale");
             const sellcancel = await secondcontract.methods.cancelsell(tokenid).send({from:props.currentAccount});
             console.log(sellcancel);
         }
@@ -115,6 +125,11 @@ const handlesalecancel = async(tokenid)=>{
 
     return(
         <div className="userpage">
+            <div className="nav-main">
+                {gettokens}
+            </div>
+            {/* <Alert variant ="danger"> 
+        <Alert.Heading>Oh snap!</Alert.Heading><p>Token isnot for sale </p></Alert>  */}
         <Nabbar
         currentAccount ={props.currentAccount}/>
         <div className="heading">
@@ -166,6 +181,7 @@ const handlesalecancel = async(tokenid)=>{
                         const tokenid = tokens[key];
                         handlesalecancel(tokenid);
                     }}
+                    disabled ={tokenstate[key] == 0}
                     
                     
                     >Cancel the sell</Button>
